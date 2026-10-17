@@ -302,3 +302,9 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
  .hero .pill .ax{gap:6px}.hero .pill .ax svg{height:7px}
  .after{margin-bottom:14px}
 }
+/* home: a rule between sections so they read as separate blocks */
+.epi,.sec,.cta{position:relative}
+.epi:after,.sec:after,.cta:after{content:"";position:absolute;top:0;left:40px;right:40px;height:1px;background:#8c9199;pointer-events:none}
+@media(max-width:780px){.epi:after,.sec:after,.cta:after{left:20px;right:20px}}
+.ask-grid{border-bottom:0}
+@media(max-width:560px){.hero{padding-bottom:20px}}
