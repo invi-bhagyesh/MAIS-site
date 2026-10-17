@@ -20,12 +20,13 @@ window.revealHome=function(scope){if(!scope||RM||!('IntersectionObserver' in win
  const secs=[...scope.querySelectorAll('.epi,.ask,.sec:not(.ask),.strip,.cta')];
  secs.forEach(sec=>{sec.classList.add('rv-sec');
   if(sec.classList.contains('epi'))rv(sec.querySelector('figcaption'),850);
+  rv(sec.querySelector('.sec-h h2'),0);
   if(sec.classList.contains('ask')){rv(sec.querySelector('.sec-h p'),200);sec.querySelectorAll('.ask-c').forEach((c,i)=>{rv(c,250+i*120);draw(c.querySelector('svg'),420+i*120)})}
   else if(sec.classList.contains('sec')){rv(sec.querySelector('.sec-h p'),200);sec.querySelectorAll('.card').forEach((c,i)=>{const d=(i%4)*90+Math.floor(i/4)*140+250;rv(c,d);draw(c.querySelector('.thumb svg'),d+150)})}
   if(sec.classList.contains('strip'))[...sec.querySelectorAll('.wrap > *')].forEach((e,i)=>rv(e,450+i*120));
   if(sec.classList.contains('cta')){rv(sec.querySelector('h2'),0);rv(sec.querySelector('.pill'),180)}});
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const s=e.target;s.classList.add('in');io.unobserve(s);
-  const h=s.querySelector('.sec-h h2');if(h&&!h.dataset.done){h.dataset.done=1;scramble(h,0,1.2)}}),{rootMargin:'0px 0px -14% 0px',threshold:.12});
+  }),{rootMargin:'0px 0px -14% 0px',threshold:.12});
  secs.forEach(s=>io.observe(s))};
 /* engraved thumbnail: the agenda's motif on grid paper with survey contours */
 function rng(s){return()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
