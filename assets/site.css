@@ -260,3 +260,12 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
  .notch.open a,.notch.open .menu{font-size:.9rem;padding:9px 14px;line-height:1.4}
  .notch.open .menu{margin-top:6px;border-top:1px solid rgba(255,255,255,.18);padding-top:12px}
 }
+/* where to begin: carousel at every size */
+.cards{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;border-top:0;scrollbar-width:none;padding:2px 0 14px}
+.cards::-webkit-scrollbar{display:none}
+.cards .card,.cards .card:nth-child(n){flex:0 0 clamp(250px,26%,320px);scroll-snap-align:start;border:1px solid var(--hair);border-radius:14px;padding:12px 12px 14px;min-height:0}
+.cards .thumb{border-radius:8px}
+.cnav{display:flex;gap:8px;margin-left:auto}
+.cnav button{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--hair);border-radius:50%;font:400 1rem var(--mono);color:var(--ink);transition:border-color .2s,color .2s}
+.cnav button:hover{border-color:var(--blue);color:var(--blue)}.cnav button:focus-visible{outline:1.5px solid var(--blue);outline-offset:2px}
+@media(max-width:560px){.cnav{display:none}.cards .card,.cards .card:nth-child(n){flex-basis:80%}.cards{margin:0 -20px;padding:2px 20px 14px}.cards .card{scroll-margin-left:20px}}
