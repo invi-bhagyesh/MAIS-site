@@ -1,0 +1,36 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Problems · MAIS</title><meta name="description" content="Search and explore the MAIS open problems."><link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" onload="renderMath()"></script></head><body><a class="skip" href="#main">Skip to content</a>
+<div class="wrap"><header class="site"><a class="brand" href="index.html" aria-label="MAIS home"><span id="logo"></span><span><b>MAIS</b><small>OPEN PROBLEMS · AI SAFETY</small></span></a><a class="l" href="index.html">Home</a><a class="l" href="problems.html" aria-current="page">Problems</a><a class="l" href="agendas.html">Agendas</a><a class="l" href="people.html">People</a><a class="l" href="about.html">About</a><a class="l" href="https://github.com/Math-for-AI-Safety/MAIS">Repository ↗</a></header></div><main id="main" class="wrap"><div class="pagehead"><span class="eyebrow">The registry</span><h1>Problems</h1><p>Select any problem for its motivation and the mathematics it needs. The full statement lives on GitHub.</p></div>
+<div class="tools"><input id="q" type="search" placeholder="Search by title, identifier or field" aria-label="Search"><select id="f1" aria-label="Safety area"></select><select id="f2" aria-label="Field"></select><select id="f3" aria-label="Difficulty"><option value="">Any difficulty</option><option value="1">★</option><option value="2">★★</option><option value="3">★★★</option></select><select id="f4" aria-label="Agenda"></select><div class="seg" role="group" aria-label="View"><button id="vl" aria-pressed="true">List</button><button id="vm" aria-pressed="false">Map</button></div></div>
+<p id="cnt" aria-live="polite"></p>
+<div id="listv"><table><thead><tr><th>ID</th><th>Problem</th><th class="m">Safety</th><th class="m">Mathematics</th><th>Difficulty</th></tr></thead><tbody id="rows"></tbody></table></div>
+<div id="mapv" hidden><div class="legend" id="lg"></div><div class="grid" id="g"></div><p class="sans" style="font-size:.78rem;color:var(--mute)">Tile color is the agenda, stars are the difficulty, a lighter border marks a resolved problem.</p></div>
+<dialog id="dr" aria-labelledby="dt"><div class="dr-in"><button class="dr-x" id="dx" aria-label="Close">×</button><span class="eyebrow" id="de"></span><h3 id="dt"></h3><p id="ds"></p><div class="dr-meta" id="dm"></div><a class="btn pri" id="dl" href="#">Read the full statement ↗</a><a class="btn" id="di" href="#">Discuss or claim ↗</a></div></dialog></main>
+<footer><div class="wrap">Text and sources released under CC BY 4.0. Draft site, working brand, not final copy. Problem statements live in the <a href="https://github.com/Math-for-AI-Safety/MAIS">MAIS repository</a>.</div></footer>
+<script src="assets/data.js"></script><script src="assets/art.js"></script><script src="assets/site.js"></script><script>document.getElementById('logo').innerHTML=ARCH;</script>
+<script>const P=MAIS.problems;const AGN={A1:'Logic and proof cost',A2:'World-models from behavior',A3:'Geometry of superposition',A4:'Training for interpretability',A5:'Which representations form',A6:'Geometric simplicity',A7:'Learning dynamics',A8:'Generalization and goals'};
+const uniq=a=>[...new Set(a)].sort();
+f1.innerHTML='<option value="">Any safety area</option>'+uniq(P.flatMap(p=>p.safety)).map(s=>`<option>${esc(s)}</option>`).join('');
+f2.innerHTML='<option value="">Any field</option>'+uniq(P.flatMap(p=>p.math)).map(s=>`<option>${esc(s)}</option>`).join('');
+f4.innerHTML='<option value="">Any agenda</option>'+Object.keys(AGN).map(a=>`<option value="${a}">${a} · ${AGN[a]}</option>`).join('');
+const qs=new URLSearchParams(location.search);if(qs.get('agenda'))f4.value=qs.get('agenda');if(qs.get('field'))f2.value=qs.get('field');
+let on=null,view='l';
+lg.innerHTML=Object.keys(AGN).map(a=>`<button aria-pressed="false" data-a="${a}"><i style="background:${agCol(a)}"></i>${a} ${AGN[a]}</button>`).join('')+'<button aria-pressed="false" data-a="none"><i style="background:'+agCol(0)+'"></i>Control</button>';
+function match(p){const t=q.value.toLowerCase();return(!t||(p.id+' '+p.title+' '+p.math.join()+' '+p.safety.join()).toLowerCase().includes(t))&&(!f1.value||p.safety.includes(f1.value))&&(!f2.value||p.math.includes(f2.value))&&(!f3.value||p.stars==f3.value)&&(!f4.value||p.agenda===f4.value)}
+function draw(){const r=P.filter(match);cnt.textContent=r.length+' of '+P.length+' problems';
+rows.innerHTML=r.map(p=>`<tr class="pr" tabindex="0" data-n="${p.n}"><td class="id"><span class="dot" style="background:${agCol(p.agenda)}"></span>O${p.n}</td><td>${esc(p.title)}${p.resolved?' <span class="tag" style="color:var(--acc);border-color:var(--acc)">resolved</span>':''}${p.empirical?' <span class="tag">empirical</span>':''}</td><td class="m">${p.safety.map(s=>`<span class="tag">${esc(s)}</span>`).join('')}</td><td class="m" style="color:var(--mute);font-size:.9rem">${esc(p.math.join(', '))}</td><td class="s stars">${stars(p.stars)}</td></tr>`).join('');
+const ids=new Set(r.map(p=>p.n));
+g.innerHTML=P.map(p=>`<button class="tile${p.resolved?' res':''}${ids.has(p.n)&&(!on||(p.agenda||'none')===on)?'':' off'}" data-n="${p.n}" style="background:${agCol(p.agenda)}" aria-label="${esc(p.id+': '+p.title)}">${p.n}<span class="s">${stars(p.stars)}</span></button>`).join('')}
+function openP(n){const p=P.find(x=>x.n==n);if(!p)return;de.textContent=p.id+(p.agenda?' · '+p.agenda+' '+AGN[p.agenda]:' · Control');dt.textContent=p.title;ds.textContent=p.short;
+dm.innerHTML=p.safety.map(s=>`<span class="tag">${esc(s)}</span>`).join('')+` <span class="stars">${stars(p.stars)}</span>${p.empirical?' · empirical':''}${p.resolved?' · <b>resolved</b>':''}<br>Mathematics: ${esc(p.math.join(', '))}`;
+dl.href=PROB+p.file;di.href='https://github.com/Math-for-AI-Safety/MAIS/issues/new/choose';if(!dr.open)dr.showModal();history.replaceState(null,'','#O'+p.n);renderMath(dr)}
+rows.addEventListener('click',e=>{const t=e.target.closest('tr');if(t)openP(t.dataset.n)});rows.addEventListener('keydown',e=>{if(e.key==='Enter'){const t=e.target.closest('tr');if(t)openP(t.dataset.n)}});
+g.addEventListener('click',e=>{const t=e.target.closest('.tile');if(t)openP(t.dataset.n)});
+lg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;on=on===b.dataset.a?null:b.dataset.a;[...lg.children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.a===on));draw()});
+dx.onclick=()=>dr.close();dr.addEventListener('close',()=>history.replaceState(null,'',location.pathname+location.search));dr.addEventListener('click',e=>{if(e.target===dr)dr.close()});
+function setView(v){view=v;listv.hidden=v!=='l';mapv.hidden=v!=='m';vl.setAttribute('aria-pressed',v==='l');vm.setAttribute('aria-pressed',v==='m')}
+vl.onclick=()=>setView('l');vm.onclick=()=>setView('m');if(qs.get('view')==='map')setView('m');
+[q,f1,f2,f3,f4].forEach(e=>e.addEventListener('input',draw));draw();
+const h=location.hash.match(/^#O(\d+)$/);if(h)openP(h[1]);</script></body></html>
