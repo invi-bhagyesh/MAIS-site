@@ -151,3 +151,24 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .fbase{border-top:1px solid #8c9199;padding-top:34px;display:flex;justify-content:space-between;align-items:flex-start}
 .fbase .wm{font:500 clamp(1.8rem,3.4vw,2.6rem)/.95 var(--dot)}.fbase .r{display:flex;gap:8px;align-items:center}
 .fbase .r .sq{width:34px;height:34px}.fbase .r svg{width:16px;height:16px;fill:currentColor}.fbase small{font:400 .72rem var(--mono);color:var(--grey);margin-right:14px}
+
+/* home: caption row with "another drawing" */
+.caprow{display:flex;align-items:stretch;gap:12px}.caprow .cap{flex:1}.again{all:unset;cursor:pointer;display:grid;place-items:center;width:34px;height:34px;align-self:center;border:1px solid var(--hair);color:var(--grey);font:400 1rem var(--mono);transition:border-color .2s,color .2s,transform .4s}
+.again:hover{border-color:var(--blue);color:var(--blue);transform:rotate(90deg)}.again:focus-visible{outline:1.5px solid var(--blue);outline-offset:3px}
+#hero-art{transition:opacity .22s ease}#hero-art.swap{opacity:0}
+/* returning visitor in this session: chrome is already on screen, no entrance */
+.returning .notch{animation:none;transform:translate(-50%,0)}
+.returning .lg-a,.returning .lg-b{animation:none;stroke-dashoffset:0}.returning .lg-p{animation:none;transform:none}
+.returning .reg i,.returning .reg b{animation:none;opacity:1}
+/* page-to-page: cross-document view transitions, notch and brand held in place */
+@view-transition{navigation:auto}
+.notch{view-transition-name:notch}.brand{view-transition-name:brand}.reg{view-transition-name:reg}
+::view-transition-old(root){animation:vt-out .28s cubic-bezier(.4,0,1,1) both}::view-transition-new(root){animation:vt-in .42s cubic-bezier(0,0,.2,1) both}
+@keyframes vt-out{to{opacity:0;transform:translateY(-6px)}}@keyframes vt-in{from{opacity:0;transform:translateY(8px)}}
+::view-transition-group(notch),::view-transition-group(brand),::view-transition-group(reg){animation-duration:0s}
+/* fallback where view transitions are unsupported */
+.fade main,.fade footer{transition:opacity .18s ease,transform .18s ease}.fade.leaving main,.fade.leaving footer{opacity:0;transform:translateY(-4px)}
+.fade.entering main,.fade.entering footer{opacity:0;transform:translateY(6px)}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+
+.btns{display:flex;gap:10px;flex-wrap:wrap}

@@ -45,3 +45,11 @@ window.surveyChart=function(box,P,vis,focus){
  pts.forEach(q=>{const p=q.p,on=(!vis||vis.has(p.n))&&(!focus||focus===q.h.k),r=p.stars===1?3:p.stars===2?4:5;
   out+=`<g class="mk${p.resolved?' res':''}${on?'':' off'}" tabindex="${on?0:-1}" role="button" data-n="${p.n}" aria-label="${esc(p.id+': '+p.title)}" transform="translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})"><path class="cross" d="M-${r+4} 0H-${r+1}M${r+1} 0H${r+4}M0 -${r+4}V-${r+1}M0 ${r+1}V${r+4}"/>${p.resolved?`<circle r="${r+3}" fill="none" stroke="#121417" stroke-width=".8"/>`:''}<circle class="m" r="${r}"/></g>`});
  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="grid-paper" role="group" aria-label="Survey chart of the open problems">${out}</svg>`};
+
+/* soft page fade for browsers without cross-document view transitions */
+(function(){if('onpagereveal' in window||RM)return;const html=document.documentElement;html.classList.add('fade','entering');
+ requestAnimationFrame(()=>requestAnimationFrame(()=>html.classList.remove('entering')));
+ document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0||a.target)return;
+  const u=new URL(a.href,location.href);if(u.origin!==location.origin||!/\.html$|\/$/.test(u.pathname)||(u.pathname===location.pathname&&u.hash))return;
+  e.preventDefault();html.classList.add('leaving');setTimeout(()=>location.href=a.href,170)});
+ addEventListener('pageshow',e=>{if(e.persisted)html.classList.remove('leaving')})})();
