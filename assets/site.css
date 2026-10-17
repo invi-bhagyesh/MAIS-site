@@ -172,3 +172,9 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .notch .brk{position:absolute;width:7px;height:7px;border:0 solid rgba(255,255,255,.88);pointer-events:none;opacity:0;z-index:3}
 .notch .brk.tl{border-left-width:1px;border-top-width:1px}.notch .brk.br{border-right-width:1px;border-bottom-width:1px}
 @media(max-width:780px){.notch .brk{display:none}.notch.open a[aria-current=page]{text-decoration:underline;text-underline-offset:4px}}
+
+/* epigraph on the home page */
+.epi{padding-top:120px;text-align:center}.epi figure{margin:0 auto;max-width:860px}
+.epi figure:before{content:"";display:block;width:56px;height:1px;background:var(--ink);margin:0 auto 34px}
+.epi blockquote{margin:0}.epi p{font:italic 300 clamp(1.55rem,3vw,2.35rem)/1.32 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
+.epi figcaption{margin-top:22px;font:400 .76rem var(--mono);color:var(--grey)}
