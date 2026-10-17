@@ -9,7 +9,7 @@ window.renderMath=el=>{try{if(window.renderMathInElement)renderMathInElement(el|
 const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 document.addEventListener('DOMContentLoaded',()=>{const n=document.querySelector('.notch'),m=n&&n.querySelector('.menu');if(m)m.addEventListener('click',()=>{const o=n.classList.toggle('open');m.setAttribute('aria-expanded',o);m.textContent=o?'Close':'Menu'})});
 /* headline that resolves out of noise, letter by letter (Harmonic-style) */
-window.scramble=function(el,delay=250){const final=el.textContent;el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
+window.scramble=function(el,delay=250){const final=el.textContent;if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
  const glyphs='#%*+=<>/:;01';const chars=[...final];el.textContent='';
  const spans=chars.map(c=>{if(c==='\n'){el.appendChild(document.createElement('br'));return null}const s=document.createElement('span');s.className='ch';s.setAttribute('aria-hidden','true');s.textContent=c===' '?'\u00a0':'·';el.appendChild(s);return [s,c]}).filter(Boolean);
  const t0=performance.now()+delay;function tick(now){let done=true;spans.forEach(([s,c],i)=>{const at=t0+i*42+260;if(c===' '){s.textContent='\u00a0';return}if(now>=at){s.textContent=c}else{done=false;if(now>t0+i*20)s.textContent=glyphs[(Math.random()*glyphs.length)|0]}});if(!done)requestAnimationFrame(tick)}requestAnimationFrame(tick)};
@@ -46,26 +46,46 @@ window.surveyChart=function(box,P,vis,focus){
   out+=`<g class="mk${p.resolved?' res':''}${on?'':' off'}" tabindex="${on?0:-1}" role="button" data-n="${p.n}" aria-label="${esc(p.id+': '+p.title)}" transform="translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})"><path class="cross" d="M-${r+4} 0H-${r+1}M${r+1} 0H${r+4}M0 -${r+4}V-${r+1}M0 ${r+1}V${r+4}"/>${p.resolved?`<circle r="${r+3}" fill="none" stroke="#121417" stroke-width=".8"/>`:''}<circle class="m" r="${r}"/></g>`});
  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="grid-paper" role="group" aria-label="Survey chart of the open problems">${out}</svg>`};
 
-/* selected tab: the corner brackets flow from the previous tab to this one, leading corner first */
-(function(){const n=document.querySelector('.notch');if(!n)return;
- const links=[...n.querySelectorAll('a')],cur=links.findIndex(a=>a.getAttribute('aria-current')==='page');
+/* selected tab: corner brackets that flow from one tab to the next, leading corner first */
+const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{move(){}};
+ const links=[...n.querySelectorAll('a')];let cur=links.findIndex(a=>a.getAttribute('aria-current')==='page');
  n.insertAdjacentHTML('beforeend','<span class="brk tl" aria-hidden="true"></span><span class="brk br" aria-hidden="true"></span>');
- const tl=n.querySelector('.brk.tl'),br=n.querySelector('.brk.br');
- links.forEach(a=>a.addEventListener('click',()=>{try{sessionStorage.setItem('mais-tab',cur)}catch(_){}}));
- if(cur<0)return;
- let prev=-1;try{const v=sessionStorage.getItem('mais-tab');if(v!==null)prev=+v;sessionStorage.removeItem('mais-tab')}catch(_){}
- const C=7,pos=a=>({tl:[a.offsetLeft,a.offsetTop],br:[a.offsetLeft+a.offsetWidth-C,a.offsetTop+a.offsetHeight-C]});
- const set=(el,[x,y])=>Object.assign(el.style,{left:x+'px',top:y+'px',opacity:1,transform:'none'});
- function place(){const p=pos(links[cur]);set(tl,p.tl);set(br,p.br)}
- function go(){if(getComputedStyle(links[cur]).display==='none')return;
-  if(RM||prev<0||prev===cur||!links[prev]||!tl.animate){place();return}
-  const a=pos(links[prev]),b=pos(links[cur]),fwd=b.tl[0]>a.tl[0];
-  const lead=fwd?br:tl,trail=fwd?tl:br,lk=fwd?'br':'tl',tk=fwd?'tl':'br',dir=fwd?1:-1;
-  const flow=(el,k,delay,dur)=>{const [x0,y0]=a[k],[x1,y1]=b[k];set(el,[x1,y1]);
-   el.animate([{transform:`translate(${x0-x1}px,${y0-y1}px)`},
-     {transform:`translate(${(x0-x1)*.18}px,${y0-y1}px) scaleX(1.9)`,offset:.62},
-     {transform:`translate(${dir*-2.5}px,0) scaleX(.85)`,offset:.84},
-     {transform:'none'}],{duration:dur,delay,easing:'cubic-bezier(.55,0,.3,1)',fill:'backwards'})};
-  flow(lead,lk,0,620);flow(trail,tk,110,700)}
- if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go);else go();
- addEventListener('resize',place)})();
+ const tl=n.querySelector('.brk.tl'),br=n.querySelector('.brk.br'),C=7;
+ const pos=a=>({tl:[a.offsetLeft,a.offsetTop],br:[a.offsetLeft+a.offsetWidth-C,a.offsetTop+a.offsetHeight-C]});
+ const set=(el,[x,y])=>Object.assign(el.style,{left:x+'px',top:y+'px',opacity:1});
+ const hide=()=>{tl.style.opacity=br.style.opacity=0};
+ function place(){if(cur<0||getComputedStyle(links[cur]).display==='none'){hide();return}const p=pos(links[cur]);set(tl,p.tl);set(br,p.br)}
+ function move(to){const from=cur;cur=to;links.forEach((a,i)=>i===to?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
+  if(to<0){hide();return}if(from<0||from===to||RM||!tl.animate||getComputedStyle(links[to]).display==='none'){place();return}
+  const a=pos(links[from]),b=pos(links[to]),fwd=b.tl[0]>a.tl[0],dir=fwd?1:-1;
+  const flow=(el,k,delay,dur)=>{const [x0,y0]=a[k],[x1,y1]=b[k];el.getAnimations().forEach(x=>x.cancel());set(el,[x1,y1]);
+   el.animate([{transform:`translate(${x0-x1}px,${y0-y1}px)`},{transform:`translate(${(x0-x1)*.18}px,${y0-y1}px) scaleX(1.9)`,offset:.62},
+    {transform:`translate(${dir*-2.5}px,0) scaleX(.85)`,offset:.84},{transform:'none'}],{duration:dur,delay,easing:'cubic-bezier(.55,0,.3,1)',fill:'backwards'})};
+  flow(fwd?br:tl,fwd?'br':'tl',0,620);flow(fwd?tl:br,fwd?'tl':'br',110,700)}
+ (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(place);addEventListener('resize',place);
+ return{move,index:h=>links.findIndex(a=>a.getAttribute('href')===h)}})();
+/* in-place navigation: swap <main>, keep the header, notch and footer */
+(function(){
+ const pageOf=u=>{const p=new URL(u,location.href).pathname.split('/').pop();return p||'index.html'};
+ const cache=new Map(),get=u=>{const k=new URL(u,location.href);k.hash='';k.search='';const key=k.href;if(!cache.has(key))cache.set(key,fetch(key).then(r=>{if(!r.ok)throw new Error(r.status);return r.text()}).catch(e=>{cache.delete(key);throw e}));return cache.get(key)};
+ const run=code=>{try{new Function(code)()}catch(e){console.error(e)}};
+ const ours=a=>{if(!a||a.target||a.hasAttribute('download'))return false;const u=new URL(a.href,location.href);return u.origin===location.origin&&/(\.html|\/)$/.test(u.pathname)&&location.protocol!=='file:'};
+ async function go(url,push){
+  let html;try{html=await get(url)}catch(_){location.href=url;return}
+  const doc=new DOMParser().parseFromString(html,'text/html'),nm=doc.querySelector('main'),code=doc.querySelector('script[data-page]');
+  if(!nm){location.href=url;return}
+  if(push)history.pushState({},'',url);
+  document.title=doc.title;const md=doc.querySelector('meta[name=description]'),cd=document.querySelector('meta[name=description]');if(md&&cd)cd.content=md.content;
+  const m=document.querySelector('main');m.innerHTML=nm.innerHTML;
+  Tabs.move(Tabs.index(pageOf(url)));
+  const u=new URL(url,location.href);if(!u.hash||/^#O\d+$/.test(u.hash))scrollTo({top:0,behavior:'instant'});
+  if(!RM)m.animate([{opacity:0},{opacity:1}],{duration:180,easing:'ease-out'});
+  m.setAttribute('tabindex','-1');m.focus({preventScroll:true});
+  if(code)run(code.textContent);renderMath(m)}
+ document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||!ours(a))return;
+  const u=new URL(a.href,location.href);if(u.pathname===location.pathname&&u.search===location.search&&u.hash)return;
+  e.preventDefault();const n=document.querySelector('.notch');if(n&&n.classList.contains('open')){n.classList.remove('open');const mb=n.querySelector('.menu');if(mb){mb.textContent='Menu';mb.setAttribute('aria-expanded',false)}}
+  go(a.href,true)});
+ document.addEventListener('pointerover',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(ours(a))get(a.href).catch(()=>{})},{passive:true});
+ addEventListener('popstate',()=>go(location.href,false));
+ const first=document.querySelector('script[data-page]');if(first)run(first.textContent)})();
