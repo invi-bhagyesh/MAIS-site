@@ -178,3 +178,14 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .epi figure:before{content:"";display:block;width:56px;height:1px;background:var(--ink);margin:0 auto 34px}
 .epi blockquote{margin:0}.epi p{font:italic 300 clamp(1.55rem,3vw,2.35rem)/1.32 var(--serif);letter-spacing:-.01em;margin:0;text-wrap:balance}
 .epi figcaption{margin-top:22px;font:400 .76rem var(--mono);color:var(--grey)}
+
+/* asking the right questions */
+.ask-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.ask-c{position:relative;padding:30px 24px 30px;border-right:1px solid var(--hair)}.ask-c:last-child{border-right:0}
+.ask-c svg{width:132px;height:99px;display:block;margin:0 0 18px -6px}
+.ask-c h3{font:400 1.3rem/1.2 var(--serif);margin:0 0 8px}.ask-c p{margin:0;color:var(--grey);font-size:.98rem;line-height:1.5}
+.ask-c.focus{background:linear-gradient(180deg,#f7f9ff,#fff 70%)}.ask-c.focus h3{color:var(--blue)}
+.ask-c.focus:before,.ask-c.focus:after{content:"";position:absolute;width:12px;height:12px;border:1px solid var(--blue)}
+.ask-c.focus:before{left:10px;top:10px;border-right:0;border-bottom:0}.ask-c.focus:after{right:10px;bottom:10px;border-left:0;border-top:0}
+@media(max-width:980px){.ask-grid{grid-template-columns:1fr 1fr}.ask-c:nth-child(2){border-right:0}.ask-c:nth-child(-n+2){border-bottom:1px solid var(--hair)}}
+@media(max-width:560px){.ask-grid{grid-template-columns:1fr}.ask-c{border-right:0!important;border-bottom:1px solid var(--hair)}.ask-c:last-child{border-bottom:0}}
