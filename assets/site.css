@@ -269,3 +269,6 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .cnav button{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--hair);border-radius:50%;font:400 1rem var(--mono);color:var(--ink);transition:border-color .2s,color .2s}
 .cnav button:hover{border-color:var(--blue);color:var(--blue)}.cnav button:focus-visible{outline:1.5px solid var(--blue);outline-offset:2px}
 @media(max-width:560px){.cnav{display:none}.cards .card,.cards .card:nth-child(n){flex-basis:80%}.cards{margin:0 -20px;padding:2px 20px 14px}.cards .card{scroll-margin-left:20px}}
+/* borderless arrow + refresh buttons */
+.cnav button,.again{border:0!important;background:none}
+.cnav button{width:32px;height:32px}
