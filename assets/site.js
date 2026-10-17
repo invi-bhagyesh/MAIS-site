@@ -46,16 +46,26 @@ window.surveyChart=function(box,P,vis,focus){
   out+=`<g class="mk${p.resolved?' res':''}${on?'':' off'}" tabindex="${on?0:-1}" role="button" data-n="${p.n}" aria-label="${esc(p.id+': '+p.title)}" transform="translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})"><path class="cross" d="M-${r+4} 0H-${r+1}M${r+1} 0H${r+4}M0 -${r+4}V-${r+1}M0 ${r+1}V${r+4}"/>${p.resolved?`<circle r="${r+3}" fill="none" stroke="#121417" stroke-width=".8"/>`:''}<circle class="m" r="${r}"/></g>`});
  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" class="grid-paper" role="group" aria-label="Survey chart of the open problems">${out}</svg>`};
 
-/* water-flow page change: remember which way we are moving through the tabs */
-(function(){const ORDER=['index.html','problems.html','agendas.html','fields.html','about.html'];
- const idx=p=>{const n=p.split('/').pop()||'index.html';return ORDER.indexOf(n)};
- document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a)return;const u=new URL(a.href,location.href);if(u.origin!==location.origin)return;
-  const from=idx(location.pathname),to=idx(u.pathname);try{sessionStorage.setItem('mais-dir',(to>=0&&from>=0&&to<from)?'back':'fwd')}catch(_){}} ,true);
- if('onpagereveal' in window||RM)return;
- /* fallback where cross-document view transitions are unsupported */
- const html=document.documentElement;html.classList.add('fade');
- if(html.classList.contains('returning')){html.classList.add('washing');setTimeout(()=>html.classList.remove('washing'),1000)}
- document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.metaKey||e.ctrlKey||e.shiftKey||e.button!==0||a.target)return;
-  const u=new URL(a.href,location.href);if(u.origin!==location.origin||!/\.html$|\/$/.test(u.pathname)||(u.pathname===location.pathname&&u.hash))return;
-  e.preventDefault();html.classList.add('leaving');setTimeout(()=>location.href=a.href,160)});
- addEventListener('pageshow',e=>{if(e.persisted)html.classList.remove('leaving')})})();
+/* selected tab: the corner brackets flow from the previous tab to this one, leading corner first */
+(function(){const n=document.querySelector('.notch');if(!n)return;
+ const links=[...n.querySelectorAll('a')],cur=links.findIndex(a=>a.getAttribute('aria-current')==='page');
+ n.insertAdjacentHTML('beforeend','<span class="brk tl" aria-hidden="true"></span><span class="brk br" aria-hidden="true"></span>');
+ const tl=n.querySelector('.brk.tl'),br=n.querySelector('.brk.br');
+ links.forEach(a=>a.addEventListener('click',()=>{try{sessionStorage.setItem('mais-tab',cur)}catch(_){}}));
+ if(cur<0)return;
+ let prev=-1;try{const v=sessionStorage.getItem('mais-tab');if(v!==null)prev=+v;sessionStorage.removeItem('mais-tab')}catch(_){}
+ const C=7,pos=a=>({tl:[a.offsetLeft,a.offsetTop],br:[a.offsetLeft+a.offsetWidth-C,a.offsetTop+a.offsetHeight-C]});
+ const set=(el,[x,y])=>Object.assign(el.style,{left:x+'px',top:y+'px',opacity:1,transform:'none'});
+ function place(){const p=pos(links[cur]);set(tl,p.tl);set(br,p.br)}
+ function go(){if(getComputedStyle(links[cur]).display==='none')return;
+  if(RM||prev<0||prev===cur||!links[prev]||!tl.animate){place();return}
+  const a=pos(links[prev]),b=pos(links[cur]),fwd=b.tl[0]>a.tl[0];
+  const lead=fwd?br:tl,trail=fwd?tl:br,lk=fwd?'br':'tl',tk=fwd?'tl':'br',dir=fwd?1:-1;
+  const flow=(el,k,delay,dur)=>{const [x0,y0]=a[k],[x1,y1]=b[k];set(el,[x1,y1]);
+   el.animate([{transform:`translate(${x0-x1}px,${y0-y1}px)`},
+     {transform:`translate(${(x0-x1)*.18}px,${y0-y1}px) scaleX(1.9)`,offset:.62},
+     {transform:`translate(${dir*-2.5}px,0) scaleX(.85)`,offset:.84},
+     {transform:'none'}],{duration:dur,delay,easing:'cubic-bezier(.55,0,.3,1)',fill:'backwards'})};
+  flow(lead,lk,0,620);flow(trail,tk,110,700)}
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go);else go();
+ addEventListener('resize',place)})();
