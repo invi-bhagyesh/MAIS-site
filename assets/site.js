@@ -13,6 +13,20 @@ window.scramble=function(el,delay=250,slow=1){const final=el.textContent;if(!el.
  const glyphs='#%*+=<>/:;01';const chars=[...final];el.textContent='';
  const spans=chars.map(c=>{if(c==='\n'){el.appendChild(document.createElement('br'));return null}const s=document.createElement('span');s.className='ch';s.setAttribute('aria-hidden','true');s.textContent=c===' '?'\u00a0':'·';el.appendChild(s);return [s,c]}).filter(Boolean);
  const t0=performance.now()+delay;function tick(now){let done=true;spans.forEach(([s,c],i)=>{const at=t0+(i*42+260)*slow;if(c===' '){s.textContent='\u00a0';return}if(now>=at){s.textContent=c}else{done=false;if(now>t0+i*20*slow)s.textContent=glyphs[(Math.random()*glyphs.length)|0]}});if(!done)requestAnimationFrame(tick)}requestAnimationFrame(tick)};
+/* home: each section has its own entrance when it scrolls into view, once */
+window.revealHome=function(scope){if(!scope||RM||!('IntersectionObserver' in window))return;
+ const rv=(el,d)=>{if(!el)return;el.classList.add('rv');el.style.setProperty('--rd',d+'ms')};
+ const draw=(svg,d)=>{if(!svg)return;svg.querySelectorAll('path,circle,rect,polygon,line').forEach(e=>{if(e.getAttribute('stroke')==='none'||e.hasAttribute('stroke-dasharray')||e.closest('[stroke-dasharray]')&&e.closest('[stroke-dasharray]')!==svg)return;e.setAttribute('pathLength','1');e.classList.add('draw');e.style.setProperty('--rd',d+'ms')})};
+ const secs=[...scope.querySelectorAll('.epi,.ask,.sec:not(.ask),.strip,.cta')];
+ secs.forEach(sec=>{sec.classList.add('rv-sec');
+  if(sec.classList.contains('epi'))rv(sec.querySelector('figcaption'),850);
+  if(sec.classList.contains('ask')){rv(sec.querySelector('.sec-h p'),200);sec.querySelectorAll('.ask-c').forEach((c,i)=>{rv(c,250+i*120);draw(c.querySelector('svg'),420+i*120)})}
+  else if(sec.classList.contains('sec')){rv(sec.querySelector('.sec-h p'),200);sec.querySelectorAll('.card').forEach((c,i)=>{const d=(i%4)*90+Math.floor(i/4)*140+250;rv(c,d);draw(c.querySelector('.thumb svg'),d+150)})}
+  if(sec.classList.contains('strip'))[...sec.querySelectorAll('.wrap > *')].forEach((e,i)=>rv(e,450+i*120));
+  if(sec.classList.contains('cta')){rv(sec.querySelector('h2'),0);rv(sec.querySelector('.pill'),180)}});
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const s=e.target;s.classList.add('in');io.unobserve(s);
+  const h=s.querySelector('.sec-h h2');if(h&&!h.dataset.done){h.dataset.done=1;scramble(h,0,1.2)}}),{rootMargin:'0px 0px -14% 0px',threshold:.12});
+ secs.forEach(s=>io.observe(s))};
 /* engraved thumbnail: the agenda's motif on grid paper with survey contours */
 function rng(s){return()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
 const inner=k=>ICON[k].replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');

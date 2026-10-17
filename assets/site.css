@@ -189,3 +189,16 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .ask-c.focus:before{left:10px;top:10px;border-right:0;border-bottom:0}.ask-c.focus:after{right:10px;bottom:10px;border-left:0;border-top:0}
 @media(max-width:980px){.ask-grid{grid-template-columns:1fr 1fr}.ask-c:nth-child(2){border-right:0}.ask-c:nth-child(-n+2){border-bottom:1px solid var(--hair)}}
 @media(max-width:560px){.ask-grid{grid-template-columns:1fr}.ask-c{border-right:0!important;border-bottom:1px solid var(--hair)}.ask-c:last-child{border-bottom:0}}
+
+/* home: section entrances (set up by revealHome; without JS everything is simply visible) */
+.rv-sec .rv{opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.2,.8,.2,1) var(--rd,0ms),transform .95s cubic-bezier(.2,.8,.2,1) var(--rd,0ms)}
+.rv-sec.in .rv{opacity:1;transform:none}
+.rv-sec .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s cubic-bezier(.45,0,.2,1) var(--rd,0ms)}
+.rv-sec.in .draw{stroke-dashoffset:0}
+.epi.rv-sec figure:before{transform:scaleX(0);transition:transform 1s cubic-bezier(.6,0,.2,1)}.epi.rv-sec.in figure:before{transform:scaleX(1)}
+.epi.rv-sec blockquote p{opacity:0;filter:blur(7px);transform:translateY(8px);transition:opacity 1.1s ease .3s,filter 1.2s ease .3s,transform 1.1s cubic-bezier(.2,.8,.2,1) .3s}
+.epi.rv-sec.in blockquote p{opacity:1;filter:none;transform:none}
+.strip.rv-sec{position:relative;border-color:transparent}
+.strip.rv-sec:before,.strip.rv-sec:after{content:"";position:absolute;left:0;right:0;height:1px;background:#8c9199;transform:scaleX(0);transition:transform 1.3s cubic-bezier(.6,0,.2,1)}
+.strip.rv-sec:before{top:-1px;transform-origin:left}.strip.rv-sec:after{bottom:-1px;transform-origin:right;transition-delay:.15s}
+.strip.rv-sec.in:before,.strip.rv-sec.in:after{transform:scaleX(1)}
