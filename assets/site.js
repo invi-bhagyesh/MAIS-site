@@ -9,7 +9,7 @@ window.renderMath=el=>{try{if(window.renderMathInElement)renderMathInElement(el|
 const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 document.addEventListener('DOMContentLoaded',()=>{const n=document.querySelector('.notch'),m=n&&n.querySelector('.menu');if(m)m.addEventListener('click',()=>{const o=n.classList.toggle('open');m.setAttribute('aria-expanded',o);m.textContent=o?'Close':'Menu'})});
 /* headline that resolves out of noise, letter by letter (Harmonic-style) */
-window.scramble=function(el,delay=250,slow=1){const final=el.textContent;if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
+window.scramble=function(el,delay=250,slow=1){const final=[...el.childNodes].map(n=>n.nodeName==='BR'?'\n':n.textContent).join('');if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
  const glyphs='#%*+=<>/:;01';const chars=[...final];el.textContent='';
  const spans=chars.map(c=>{if(c==='\n'){el.appendChild(document.createElement('br'));return null}const s=document.createElement('span');s.className='ch';s.setAttribute('aria-hidden','true');s.textContent=c===' '?'\u00a0':'·';el.appendChild(s);return [s,c]}).filter(Boolean);
  const t0=performance.now()+delay;function tick(now){let done=true;spans.forEach(([s,c],i)=>{const at=t0+(i*42+260)*slow;if(c===' '){s.textContent='\u00a0';return}if(now>=at){s.textContent=c}else{done=false;if(now>t0+i*20*slow)s.textContent=glyphs[(Math.random()*glyphs.length)|0]}});if(!done)requestAnimationFrame(tick)}requestAnimationFrame(tick)};
