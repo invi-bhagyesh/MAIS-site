@@ -202,3 +202,5 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 .strip.rv-sec:before,.strip.rv-sec:after{content:"";position:absolute;left:0;right:0;height:1px;background:#8c9199;transform:scaleX(0);transition:transform 1.3s cubic-bezier(.6,0,.2,1)}
 .strip.rv-sec:before{top:-1px;transform-origin:left}.strip.rv-sec:after{bottom:-1px;transform-origin:right;transition-delay:.15s}
 .strip.rv-sec.in:before,.strip.rv-sec.in:after{transform:scaleX(1)}
+
+.lg-t{opacity:0;animation:fadein .6s .9s forwards}.returning .lg-t{animation:none;opacity:1}
