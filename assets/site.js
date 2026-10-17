@@ -104,3 +104,5 @@ const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{mov
  document.addEventListener('pointerover',e=>{const a=e.target.closest&&e.target.closest('a[href]');if(ours(a))get(a.href).catch(()=>{})},{passive:true});
  addEventListener('popstate',()=>go(location.href,false));
  const first=document.querySelector('script[data-page]');if(first)run(first.textContent)})();
+/* tap outside the open menu closes it */
+document.addEventListener('click',e=>{const n=document.querySelector('.notch.open');if(!n||n.contains(e.target))return;n.classList.remove('open');const b=n.querySelector('.menu');if(b){b.textContent='Menu';b.setAttribute('aria-expanded',false)}});
