@@ -242,3 +242,9 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
  .cards .thumb{border-radius:8px}
 }
 @media(max-width:780px){.phead{flex-direction:column;align-items:flex-start}.phead p{max-width:none}}
+/* slimmer notch */
+.notch{padding:4px 22px 6px;border-radius:0 0 13px 13px}
+.notch:before,.notch:after{width:13px;height:13px}
+.notch:before{left:-13px;background:radial-gradient(circle at 0 100%,transparent 12.5px,var(--ink) 13px)}.notch:after{right:-13px;background:radial-gradient(circle at 100% 100%,transparent 12.5px,var(--ink) 13px)}
+.notch a{font-size:.7rem;padding:3px 11px}.notch .menu{font-size:.7rem;padding:3px 10px}
+@media(max-width:780px){.notch.open{padding:6px 20px 12px}.notch.open a{padding:7px 14px}}
