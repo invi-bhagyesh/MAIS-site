@@ -308,3 +308,10 @@ footer{margin-top:120px}footer .wrap{padding-bottom:50px}
 @media(max-width:780px){.epi:after,.sec:after,.cta:after{left:20px;right:20px}}
 .ask-grid{border-bottom:0}
 @media(max-width:560px){.hero{padding-bottom:20px}}
+/* phone: smaller "asking the right questions" rows */
+@media(max-width:560px){
+ .ask-c{grid-template-columns:64px 1fr;column-gap:12px;padding:12px 0}
+ .ask-c svg{width:64px;height:48px}
+ .ask-c h3{font-size:1.02rem;margin-bottom:2px}.ask-c p{font-size:.84rem;line-height:1.35}
+ .ask-c.focus{padding:12px 10px}.ask-c.focus:before{left:6px;top:6px;width:9px;height:9px}.ask-c.focus:after{right:6px;bottom:6px;width:9px;height:9px}
+}
