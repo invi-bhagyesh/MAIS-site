@@ -77,7 +77,7 @@ const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{mov
     {transform:`translate(${dir*-2.5}px,0) scaleX(.85)`,offset:.84},{transform:'none'}],{duration:dur,delay,easing:'cubic-bezier(.55,0,.3,1)',fill:'backwards'})};
   flow(fwd?br:tl,fwd?'br':'tl',0,620);flow(fwd?tl:br,fwd?'tl':'br',110,700)}
  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(place);addEventListener('resize',place);
- return{move,index:h=>links.findIndex(a=>a.getAttribute('href')===h)}})();
+ return{move,index:h=>links.findIndex(a=>(new URL(a.href,location.href).pathname.split('/').pop()||'index.html')===h)}})();
 /* in-place navigation: swap <main>, keep the header, notch and footer */
 (function(){
  const pageOf=u=>{const p=new URL(u,location.href).pathname.split('/').pop();return p||'index.html'};
