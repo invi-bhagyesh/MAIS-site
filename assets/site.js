@@ -9,43 +9,10 @@ window.renderMath=el=>{try{if(window.renderMathInElement)renderMathInElement(el|
 const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 document.addEventListener('DOMContentLoaded',()=>{const n=document.querySelector('.notch'),m=n&&n.querySelector('.menu');if(m)m.addEventListener('click',()=>{const o=n.classList.toggle('open');m.setAttribute('aria-expanded',o);m.textContent=o?'Close':'Menu'})});
 /* headline that resolves out of noise, letter by letter (Harmonic-style) */
-window.scramble=function(el,delay=250){const final=el.textContent;if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
+window.scramble=function(el,delay=250,slow=1){const final=el.textContent;if(!el.hasAttribute('aria-label'))el.setAttribute('aria-label',final.replace(/\s+/g,' ').trim());if(RM)return;
  const glyphs='#%*+=<>/:;01';const chars=[...final];el.textContent='';
  const spans=chars.map(c=>{if(c==='\n'){el.appendChild(document.createElement('br'));return null}const s=document.createElement('span');s.className='ch';s.setAttribute('aria-hidden','true');s.textContent=c===' '?'\u00a0':'·';el.appendChild(s);return [s,c]}).filter(Boolean);
- const t0=performance.now()+delay;function tick(now){let done=true;spans.forEach(([s,c],i)=>{const at=t0+i*42+260;if(c===' '){s.textContent='\u00a0';return}if(now>=at){s.textContent=c}else{done=false;if(now>t0+i*20)s.textContent=glyphs[(Math.random()*glyphs.length)|0]}});if(!done)requestAnimationFrame(tick)}requestAnimationFrame(tick)};
-/* home title: each dot-matrix letter is assembled from its own dots, which drift in from the left */
-window.dotAssemble=async function(el){if(!el||RM)return;
- const ink=getComputedStyle(el).color;el.style.color='transparent';const restore=()=>{el.style.color=''};const guard=setTimeout(restore,3000);
- try{await document.fonts.load('500 40px Doto');await document.fonts.ready}catch(e){}
- if(!document.fonts.check('500 40px Doto')){clearTimeout(guard);restore();return}
- const cs=getComputedStyle(el),r=el.getBoundingClientRect(),M=Math.round(parseFloat(cs.fontSize)*.6),W=Math.ceil(r.width)+2*M,H=Math.ceil(r.height)+2*M;
- if(W<20||H<20){clearTimeout(guard);restore();return}
- const off=document.createElement('canvas');off.width=W;off.height=H;const o=off.getContext('2d',{willReadFrequently:true});
- o.font=`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;if('letterSpacing' in o)o.letterSpacing=cs.letterSpacing==='normal'?'0px':cs.letterSpacing;o.fillStyle='#000';o.textBaseline='alphabetic';
- const tw=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);let nd;
- while((nd=tw.nextNode())){const t=nd.textContent;if(!t.trim())continue;const rg=document.createRange();rg.selectNodeContents(nd);const rc=rg.getClientRects()[0];if(!rc)continue;
-  const m=o.measureText(t),asc=m.fontBoundingBoxAscent??m.actualBoundingBoxAscent,des=m.fontBoundingBoxDescent??m.actualBoundingBoxDescent;
-  o.fillText(t,rc.left-r.left+M,rc.top-r.top+M+(rc.height-(asc+des))/2+asc)}
- const A=o.getImageData(0,0,W,H).data,seen=new Uint8Array(W*H),dots=[];
- for(let y=0;y<H;y++)for(let x=0;x<W;x++){const i=y*W+x;if(seen[i]||A[i*4+3]<110)continue;
-  let sx=0,sy=0,n=0;const st=[i];seen[i]=1;
-  while(st.length){const k=st.pop(),kx=k%W,ky=(k/W)|0;sx+=kx;sy+=ky;n++;
-   for(const q of [k-1,k+1,k-W,k+W]){if(q<0||q>=W*H||seen[q])continue;const qx=q%W;if(Math.abs(qx-kx)>1)continue;if(A[q*4+3]>=110){seen[q]=1;st.push(q)}}}
-  if(n>2)dots.push({x:sx/n+.5,y:sy/n+.5,r:Math.sqrt(n/Math.PI)})}
- if(!dots.length){clearTimeout(guard);restore();return}
- const dpr=Math.min(2,devicePixelRatio||1),cv=document.createElement('canvas');cv.width=W*dpr;cv.height=H*dpr;cv.setAttribute('aria-hidden','true');
- Object.assign(cv.style,{position:'absolute',left:-M+'px',top:-M+'px',width:W+'px',height:H+'px',pointerEvents:'none'});
- el.style.position='relative';el.appendChild(cv);const g=cv.getContext('2d');g.scale(dpr,dpr);g.fillStyle=ink;
- const rand=(a,b)=>a+Math.random()*(b-a);
- dots.forEach(d=>{d.x0=d.x-rand(60,W*.55);d.y0=d.y+rand(-1,1)*rand(10,70);d.dl=(d.x/W)*620+rand(0,220);d.du=rand(780,1150)});
- const ease=t=>1-Math.pow(1-t,3),t0=performance.now()+120;let done=false;
- clearTimeout(guard);
- (function frame(now){const t=now-t0;g.clearRect(0,0,W,H);let all=true;
-  for(const d of dots){let k=(t-d.dl)/d.du;if(k<1)all=false;k=Math.max(0,Math.min(1,k));if(k<=0)continue;const e=ease(k);
-   const x=d.x0+(d.x-d.x0)*e,y=d.y0+(d.y-d.y0)*e+Math.sin(k*Math.PI)*-6;
-   g.globalAlpha=Math.min(1,k*2.2);g.beginPath();g.arc(x,y,d.r*(.55+.45*e),0,Math.PI*2);g.fill()}
-  g.globalAlpha=1;if(!all){requestAnimationFrame(frame);return}
-  if(done)return;done=true;restore();cv.animate([{opacity:1},{opacity:0}],{duration:240,fill:'forwards'}).onfinish=()=>cv.remove()})(performance.now())};
+ const t0=performance.now()+delay;function tick(now){let done=true;spans.forEach(([s,c],i)=>{const at=t0+(i*42+260)*slow;if(c===' '){s.textContent='\u00a0';return}if(now>=at){s.textContent=c}else{done=false;if(now>t0+i*20*slow)s.textContent=glyphs[(Math.random()*glyphs.length)|0]}});if(!done)requestAnimationFrame(tick)}requestAnimationFrame(tick)};
 /* engraved thumbnail: the agenda's motif on grid paper with survey contours */
 function rng(s){return()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296}}
 const inner=k=>ICON[k].replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');
