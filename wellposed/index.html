@@ -12,6 +12,20 @@ function show(i){cur=i;const h=HS[i];art.innerHTML=h.svg;capid.textContent='MAIS
 let last=null;try{last=localStorage.getItem('mais-last')}catch(e){}
 const pool=HS.map((h,i)=>i).filter(i=>HS[i].id!==last);show(pool[Math.floor(Math.random()*pool.length)]);
 again.addEventListener('click',()=>{art.classList.add('swap');setTimeout(()=>{show((cur+1)%HS.length);art.classList.remove('swap')},220)});
+(()=>{const el=cards;if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+let on=true,vis=false,pos=0,last=0,hold=0;
+const stop=()=>{on=false;el.classList.remove('auto')},go=()=>{on=true;pos=el.scrollLeft;hold=0;el.classList.add('auto')};
+el.classList.add('auto');
+new IntersectionObserver(e=>{vis=e[0].isIntersecting}).observe(el);
+['pointerenter','touchstart','focusin','wheel'].forEach(ev=>el.addEventListener(ev,stop,{passive:true}));
+['pointerleave','touchend','focusout'].forEach(ev=>el.addEventListener(ev,()=>setTimeout(go,1200)));
+[cprev,cnext].forEach(b=>b.addEventListener('click',()=>{stop();setTimeout(go,4000)}));
+function tick(t){if(!el.isConnected)return;const dt=Math.min(64,t-last);last=t;
+ if(on&&vis){const max=el.scrollWidth-el.clientWidth;
+  if(hold>0){hold-=dt;if(hold<=0){pos=0;el.classList.remove('auto');el.scrollTo({left:0,behavior:'smooth'});setTimeout(()=>{pos=0;if(on)el.classList.add('auto')},900);hold=-1}}
+  else if(hold===0){pos+=dt*0.028;if(pos>=max){pos=max;hold=1600}el.scrollLeft=pos}}
+ requestAnimationFrame(tick)}
+requestAnimationFrame(tick)})();
 requestAnimationFrame(()=>revealHome(document.querySelector('main')));
 const P=MAIS.problems;n1.textContent=P.length;
 const S=[['A1','O16','Measure the least proof budget at which FairBot cooperates, as the proof system and encoding vary.'],['A2','O34','Does X cause Y, or Y cause X? Find which models of a two-variable world fit an agent’s behavior.'],['A3','O41','Work out exactly when a sparse autoencoder recovers two features and when it merges them.'],['A4','O51','Solve the regularized phase diagram of the smallest model: two features in one dimension.'],['A5','O59','Two neurons learn addition mod 5. Which Fourier frequency does each one end up using?'],['A6','O6','Classify the most singular exact fits of a small modular-addition network, or find one that is not Fourier.'],['A7','O75','How quickly does noisy training drift toward the flatter of two equally good solutions?'],['A8','O89','Compute the boundary-state residual of max-margin gradient descent in the linear coin model.']];
