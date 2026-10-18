@@ -63,7 +63,7 @@ window.surveyChart=function(box,P,vis,focus){
 
 /* selected tab: corner brackets that flow from one tab to the next, leading corner first */
 const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{move(){}};
- const links=[...n.querySelectorAll('a')];let cur=links.findIndex(a=>a.getAttribute('aria-current')==='page');
+ const links=[...n.querySelectorAll('a:not(.ver)')];let cur=links.findIndex(a=>a.getAttribute('aria-current')==='page');
  n.insertAdjacentHTML('beforeend','<span class="brk tl" aria-hidden="true"></span><span class="brk br" aria-hidden="true"></span>');
  const tl=n.querySelector('.brk.tl'),br=n.querySelector('.brk.br'),C=7;
  const pos=a=>({tl:[a.offsetLeft,a.offsetTop],br:[a.offsetLeft+a.offsetWidth-C,a.offsetTop+a.offsetHeight-C]});
@@ -84,7 +84,7 @@ const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{mov
  const pageOf=u=>{const p=new URL(u,location.href).pathname.split('/').pop();return p||'index.html'};
  const cache=new Map(),get=u=>{const k=new URL(u,location.href);k.hash='';k.search='';const key=k.href;if(!cache.has(key))cache.set(key,fetch(key).then(r=>{if(!r.ok)throw new Error(r.status);return r.text()}).catch(e=>{cache.delete(key);throw e}));return cache.get(key)};
  const run=code=>{try{new Function(code)()}catch(e){console.error(e)}};
- const ours=a=>{if(!a||a.target||a.hasAttribute('download'))return false;const u=new URL(a.href,location.href);return u.origin===location.origin&&/(\.html|\/)$/.test(u.pathname)&&location.protocol!=='file:'};
+ const ours=a=>{if(!a||a.classList.contains('ver')||a.target||a.hasAttribute('download'))return false;const u=new URL(a.href,location.href);return u.origin===location.origin&&/(\.html|\/)$/.test(u.pathname)&&location.protocol!=='file:'};
  async function go(url,push){
   let html;try{html=await get(url)}catch(_){location.href=url;return}
   const doc=new DOMParser().parseFromString(html,'text/html'),nm=doc.querySelector('main'),code=doc.querySelector('script[data-page]');
