@@ -382,3 +382,24 @@ footer.site-foot{margin-top:-36px;position:relative;z-index:2;background:var(--n
 .site-foot .sq{border-color:rgba(255,255,255,.25);color:#fff;background:none}.site-foot .sq:hover{border-color:#a9c4ff;color:#a9c4ff;background:none}
 @media(max-width:900px){.f-cols{grid-template-columns:1fr 1fr}.f-col{border-right:0;margin-right:0;padding-right:12px;border-bottom:1px solid rgba(255,255,255,.12);min-height:0}}
 @media(max-width:560px){footer.site-foot{padding:56px 0 22px;border-radius:26px 26px 0 0;margin-top:-26px}.f-h{margin-bottom:34px}.f-cols{grid-template-columns:1fr}.f-col{padding:18px 0}.f-col i{margin-top:8px}.ask{padding-bottom:48px}.ask+.sec{padding-top:56px;padding-bottom:56px}.cta{padding-top:64px;padding-bottom:72px}.strip .wrap{padding-top:28px;padding-bottom:28px}.hero h1{font-size:8.4vw}.phead{padding:56px 0 36px;margin-bottom:24px}}
+
+/* ===== footer curtain, brand-coloured, scan-line headline ===== */
+:root{--deep:#111a44;--deep-2:#18235a}
+main{position:relative;z-index:2;background:var(--paper);border-radius:0 0 32px 32px;overflow:clip;min-height:60vh}
+footer.site-foot{position:relative;z-index:1;margin:0;border-radius:0;padding:96px 0 28px;color:#e8ecff;
+ background:linear-gradient(rgba(232,236,255,.045) 1px,transparent 1px) 0 0/100% 18px,linear-gradient(90deg,rgba(232,236,255,.045) 1px,transparent 1px) 0 0/18px 100%,var(--deep)}
+body:not(.curtain) main{margin-bottom:-32px;padding-bottom:0}
+body:not(.curtain) footer.site-foot{padding-top:128px}
+body.curtain footer.site-foot{position:fixed;left:0;right:0;bottom:0}
+body.curtain main{margin-bottom:var(--fh,0)}
+.f-mark svg{color:#e8ecff}
+.f-h{font:600 clamp(2.4rem,6vw,5.2rem)/1.02 var(--dot);letter-spacing:-.04em;max-width:900px;color:transparent;
+ background:repeating-linear-gradient(0deg,#e8ecff 0 2px,transparent 2px 5px);-webkit-background-clip:text;background-clip:text;margin-bottom:64px}
+.f-cols,.site-foot .fbase{border-color:rgba(232,236,255,.18)}
+.f-col{border-right-color:rgba(232,236,255,.18);color:#fff}
+.f-col span{color:rgba(232,236,255,.64)}.f-col i{color:rgba(232,236,255,.85)}
+.f-col:hover b,.f-col:hover i{color:#9db4ff}
+.site-foot .fbase small{color:rgba(232,236,255,.6)}
+.site-foot .sq{border-color:rgba(232,236,255,.28)}
+@media(max-width:900px){.f-col{border-bottom-color:rgba(232,236,255,.14)}}
+@media(max-width:560px){footer.site-foot{padding:64px 0 22px;border-radius:0}body:not(.curtain) footer.site-foot{padding-top:88px}main{border-radius:0 0 24px 24px}body:not(.curtain) main{margin-bottom:-24px}.f-h{font-size:12vw;margin-bottom:36px}}
