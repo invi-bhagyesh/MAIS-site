@@ -403,3 +403,14 @@ body.curtain main{margin-bottom:var(--fh,0)}
 .site-foot .sq{border-color:rgba(232,236,255,.28)}
 @media(max-width:900px){.f-col{border-bottom-color:rgba(232,236,255,.14)}}
 @media(max-width:560px){footer.site-foot{padding:64px 0 22px;border-radius:0}body:not(.curtain) footer.site-foot{padding-top:88px}main{border-radius:0 0 24px 24px}body:not(.curtain) main{margin-bottom:-24px}.f-h{font-size:12vw;margin-bottom:36px}}
+
+/* ===== tidier header + notch ===== */
+header.top{padding-top:22px;padding-bottom:26px;align-items:center}
+.brand{gap:10px}.brand span{font:500 .86rem/1.1 var(--serif);letter-spacing:-.01em}.brand svg{width:28px;height:28px}
+.repo{padding-top:0;font-size:.72rem}
+.notch{background:var(--deep);padding:5px 20px 8px;border-radius:0 0 16px 16px}
+.notch:before{left:-16px;width:16px;height:16px;background:radial-gradient(circle at 0 100%,transparent 15.5px,var(--deep) 16px)}
+.notch:after{right:-16px;width:16px;height:16px;background:radial-gradient(circle at 100% 100%,transparent 15.5px,var(--deep) 16px)}
+.notch a{font-size:.72rem;padding:4px 12px;letter-spacing:.01em}
+.notch a[aria-current=page]{color:#fff}
+@media(max-width:780px){header.top{padding-top:18px;padding-bottom:20px}.notch{padding:2px 18px 4px}.notch.open{padding:4px 18px 8px;border-radius:20px}}
