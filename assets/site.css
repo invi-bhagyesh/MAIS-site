@@ -427,3 +427,7 @@ body:not(.curtain) footer.site-foot{padding-top:88px}
 .ask-grid.three .ask-c{padding:30px 28px 34px}
 .ask-grid.three .ask-c h3{font-size:1.25rem;margin-bottom:10px}
 @media(max-width:780px){.ask-grid.three{grid-template-columns:1fr}.ask-grid.three .ask-c{display:block;border-right:0!important;border-bottom:1px solid rgba(11,20,36,.14);padding:20px 0}.ask-grid.three .ask-c:last-child{border-bottom:0}.ask-grid.three .ask-c.focus{padding:20px 12px}}
+/* curtain: footer runs 36px up under the page so the rounded corners reveal it */
+body.curtain main{margin-bottom:calc(var(--fh,0px) - 36px)}
+body.curtain footer.site-foot{padding-top:92px}
+@media(max-width:560px){body.curtain main{margin-bottom:calc(var(--fh,0px) - 24px)}body.curtain footer.site-foot{padding-top:60px}}
