@@ -106,5 +106,5 @@ const Tabs=(function(){const n=document.querySelector('.notch');if(!n)return{mov
 document.addEventListener('click',e=>{const n=document.querySelector('.notch.open');if(!n||n.contains(e.target))return;n.classList.remove('open');const b=n.querySelector('.menu');if(b){b.textContent='Menu';b.setAttribute('aria-expanded',false)}});
 /* footer curtain: footer stays put underneath, the page lifts away from it */
 (function(){const f=document.querySelector('footer.site-foot');if(!f)return;
- const fit=()=>{const h=f.offsetHeight,ok=h<=innerHeight-110&&!matchMedia('(prefers-reduced-motion:reduce)').matches;document.body.classList.toggle('curtain',ok);document.documentElement.style.setProperty('--fh',h+'px')};
+ const fit=()=>{const h=f.offsetHeight,ok=h<=innerHeight-60&&!matchMedia('(prefers-reduced-motion:reduce)').matches;document.body.classList.toggle('curtain',ok);document.documentElement.style.setProperty('--fh',h+'px')};
  fit();addEventListener('resize',fit);addEventListener('load',fit);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit)})();
